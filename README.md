@@ -1,4 +1,4 @@
-d3.histogram
+d3.barchart
 ============
 
-reusable histogram component
+reusable barchart component

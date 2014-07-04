@@ -1,11 +1,13 @@
 if not d3.chart?
     d3.chart = {}
 
-d3.chart.histogram = ->
+d3.chart.barchart = ->
     margin = {top: 20, right: 20, bottom: 40, left: 70}
     width = 900
     height = 600
-    value = (d, i) -> d[0]
+    bar_width = 10
+    x_value = (d, i) -> d
+    y_value = (d, i) -> d
     x_scale = d3.scale.linear()
     y_scale = d3.scale.linear()
     x_axis = d3.svg.axis()
@@ -64,13 +66,14 @@ d3.chart.histogram = ->
             g = svg.select "g"
                 .attr "transform", "translate(#{margin.left}, #{margin.top})"
 
-            #create histogram layout
-            histogram = d3.layout.histogram()
-                .bins x_scale.ticks n_bins
+            layout = data.map (d, i) ->
+                {
+                    x: x_value(d, i)
+                    y: y_value(d, i)
+                }
 
-            layout = histogram data.map value
-
-            y_scale.domain [0, d3.max layout, (d) -> d.y]
+            y_scale.domain d3.extent layout, (d) -> d.y
+            x_scale.domain d3.extent layout, (d) -> d.x
 
             bars = g.select "g.histogram"
                 .selectAll "rect"
@@ -83,7 +86,7 @@ d3.chart.histogram = ->
             bars
                 .classed "bar", true
                 .attr "x", (d) -> x_scale d.x
-                .attr "width", x_scale(layout[0].dx) - x_scale(0) - 1
+                .attr "width", bar_width
                 .attr "height", (d) -> height - y_scale(d.y) - margin.top - margin.bottom
                 .transition()
                 .attr "y", (d) -> y_scale d.y
@@ -101,6 +104,12 @@ d3.chart.histogram = ->
             g.select ".y.axis"
                 .transition()
                 .call y_axis
+
+    chart.bar_width = (value) ->
+        if not arguments.length
+            return bar_width
+        bar_width = value
+        chart
 
     chart.width = (value) ->
         if not arguments.length
@@ -120,10 +129,16 @@ d3.chart.histogram = ->
         margin = value
         chart
 
-    chart.value = (v) ->
+    chart.x_value = (v) ->
         if not arguments.length
-            return value
-        value = v
+            return x_value
+        x_value = v
+        chart
+
+    chart.y_value = (v) ->
+        if not arguments.length
+            return y_value
+        y_value = v
         chart
 
     chart.x_title = (value) ->
