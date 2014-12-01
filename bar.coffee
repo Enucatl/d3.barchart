@@ -1,4 +1,4 @@
-class d3.chart.Line extends d3.chart.BaseChart
+class d3.chart.Bar extends d3.chart.BaseChart
 
     constructor: ->
         @accessors = {} unless @accessors?
