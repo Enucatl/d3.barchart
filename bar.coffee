@@ -46,15 +46,15 @@ class d3.chart.Bar extends d3.chart.BaseChart
             .append "g"
             .classed "bars", true
 
+        bar_width = width / data.length
+
         bars = g.select "g.bars"
             .selectAll "rect"
             .data (d) -> d
-            .enter()
-            .append "rect"
-
-        bar_width = width / data.length
 
         bars
+            .enter()
+            .append "rect"
             .classed "bar", true
             .attr "x", (d) -> x_scale x_value d
             .attr "y", (d) -> y_scale y_value d
