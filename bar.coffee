@@ -1,6 +1,3 @@
----
----
-
 class d3.chart.Bar extends d3.chart.BaseChart
 
     constructor: ->
